@@ -2,7 +2,6 @@ import mysql.connector
 import datetime
 import os
 
-
 def get_timestamp(path):
     t = os.path.getmtime(path)
     if(t):
@@ -23,23 +22,19 @@ def insert_sighting(cursor, cnx, turtle_tag_id, latitude, longitude, drone_image
 
 def connect_to_db(host, user, pw, db):
     #setup db connection
-    cnx = mysql.connector.connect(
-        host = host,
-        user = user,
-        password = pw,
-        database = db
-    )
-    cursor=cnx.cursor() #create db cursor
-    return cnx, cursor
+    cnx = mysql.connector.connect(host = host,user = user,password = pw,database = db)
+    return cnx
 
 if __name__ == '__main__':
-    host = "dct-turtle-uav.cojdookdlkis.us-east-1.rds.amazonaws.com", #AWS RDB endpoint
-    user = "admin",
-    password = "DukeConservationTech1!",
+    #DB credentials
+    host = "dct-turtle-uav.cojdookdlkis.us-east-1.rds.amazonaws.com" #AWS RDB endpoint
+    user = "admin"
+    password = "DukeConservationTech1!"
     database = "dct_turtle_uav_db"
 
     #connect to DB
-    cxn, cursor = connect_to_db(host, user, password, database)
+    cnx = connect_to_db(host, user, password, database)
+    print(cnx)
 
     #test get_timestamp method
     path = "/Users/josephnagy/Desktop/test.jpg"
