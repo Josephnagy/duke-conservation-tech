@@ -1,16 +1,9 @@
 import mysql.connector
 import datetime
 import os
+import cv2
 
-def get_timestamp(path):
-    t = os.path.getmtime(path)
-    if(t):
-        return datetime.datetime.fromtimestamp(t)
-    else:
-        print("No timestamp available")
-        return None
-
-#method: insert sighting into sighting table
+#insert sighting into sighting table
 def insert_sighting(cursor, cnx, turtle_tag_id, latitude, longitude, drone_image, timestamp): #no sighting_id bc AI field
     insert_stmt = ("""INSERT INTO sighting (turtle_tag_id, latitude, longitude, drone_image, timestamp)
                     VALUES (%s,%s,%s,%s,%s)""") #parameters are always %s
@@ -20,10 +13,24 @@ def insert_sighting(cursor, cnx, turtle_tag_id, latitude, longitude, drone_image
     cursor.execute(insert_stmt, data)
     cnx.commit()
 
+def get_timestamp(path):
+    t = os.path.getmtime(path)
+    if(t):
+        return datetime.datetime.fromtimestamp(t)
+    else:
+        print("No timestamp available")
+        return None
+
+def load_images_from_folder(folder):
+    images = []
+    for filename in os.listdir(folder):
+        img = cv2.imread(os.path.join(folder,filename))
+        if img is not None:
+            images.append(img)
+    return images
+
 def connect_to_db(host, user, pw, db):
-    #setup db connection
-    cnx = mysql.connector.connect(host = host,user = user,password = pw,database = db)
-    return cnx
+    return mysql.connector.connect(host = host,user = user,password = pw,database = db)
 
 if __name__ == '__main__':
     #DB credentials
@@ -32,10 +39,5 @@ if __name__ == '__main__':
     password = "DukeConservationTech1!"
     database = "dct_turtle_uav_db"
 
-    #connect to DB
-    cnx = connect_to_db(host, user, password, database)
-    print(cnx)
-
-    #test get_timestamp method
-    path = "/Users/josephnagy/Desktop/test.jpg"
-    print(get_timestamp(path))
+    #establish DB connection
+    #cnx = connect_to_db(host, user, password, database)
