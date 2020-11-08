@@ -21,16 +21,26 @@ def insert_sighting(cursor, cnx, turtle_tag_id, latitude, longitude, drone_image
     cursor.execute(insert_stmt, data)
     cnx.commit()
 
-if __name__ == '__main__':
-    #make database connection
-    #cnx = mysql.connector.connect(
-        #host = "dct-turtle-uav.cojdookdlkis.us-east-1.rds.amazonaws.com", #AWS RDB endpoint
-        #user = "admin",
-        #password = "DukeConservationTech1!",
-        #database = "dct_turtle_uav_db"
-    #)
-    #cursor=cnx.cursor() #create db cursor
+def connect_to_db(host, user, pw, db):
+    #setup db connection
+    cnx = mysql.connector.connect(
+        host = host,
+        user = user,
+        password = pw,
+        database = db
+    )
+    cursor=cnx.cursor() #create db cursor
+    return cnx, cursor
 
-    #test date getter method
+if __name__ == '__main__':
+    host = "dct-turtle-uav.cojdookdlkis.us-east-1.rds.amazonaws.com", #AWS RDB endpoint
+    user = "admin",
+    password = "DukeConservationTech1!",
+    database = "dct_turtle_uav_db"
+
+    #connect to DB
+    cxn, cursor = connect_to_db(host, user, password, database)
+
+    #test get_timestamp method
     path = "/Users/josephnagy/Desktop/test.jpg"
     print(get_timestamp(path))
