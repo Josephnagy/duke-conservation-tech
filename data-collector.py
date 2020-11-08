@@ -1,5 +1,15 @@
 import mysql.connector
 
+#method: insert sighting into sighting table
+def insert_sighting(cursor, cnx, turtle_tag_id, latitude, longitude, drone_image, timestamp): #no sighting_id bc AI field
+    insert_stmt = ("""INSERT INTO sighting (turtle_tag_id, latitude, longitude, drone_image, timestamp)
+                    VALUES (%s,%s,%s,%s,%s)""") #parameters are always %s
+    data = (turtle_tag_id, latitude, longitude, drone_image, timestamp)
+
+    #update db with new data
+    cursor.execute(insert_stmt, data)
+    cnx.commit()
+
 if __name__ == '__main__':
     #make database connection
     cnx = mysql.connector.connect(
@@ -8,10 +18,4 @@ if __name__ == '__main__':
         password = "DukeConservationTech1!",
         database = "dct_turtle_uav_db"
     )
-    #create db cursor
-    cursor=cnx.cursor()
-    #insert_stmt = ("INSERT INTO sighting (turtle_tag_id) VALUES (%s) ")
-    #data = (1,)
-    #cursor.execute(insert_stmt, data)
-    #cnx.commit()
-    print(cnx.database)
+    cursor=cnx.cursor() #create db cursor
